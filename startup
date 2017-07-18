@@ -1,0 +1,12 @@
+#!/bin/bash
+setxkbmap -layout "us,ru(winkeys)" -model pc105 -option grp:alt_shift_toggle &
+while true; do
+    battery=$(/build/dwm-6.1/power 1)
+    TEMPERATURE="$(/build/dwm-6.1/temp_scan)"
+    memcpu=$(/build/dwm-6.1/memcpu $(cat /proc/meminfo | grep Mem) $(cat /proc/meminfo |grep Swap) $(cat /proc/cpuinfo | grep MHz))
+    xsetroot -name "$memcpu| температура $TEMPERATURE | $battery | $( date )"
+    sleep 1s
+    xsetroot -name "$memcpu| температура $TEMPERATURE | $battery | $( date )"
+    sleep 1s
+done &
+echo 'done'
