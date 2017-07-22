@@ -59,9 +59,9 @@ install: all
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/temp_scan
 	@cp -f memcpu ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/memcpu
-	#@mkdir ~/.config/dwm
-	#@cp panel ~/.config/dwm
-	#@cp startup ~/.config/dwm
+	@mkdir ~/.config/dwm
+	@cp panel ~/.config/dwm
+	@cp startup ~/.config/dwm
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
