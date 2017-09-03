@@ -2172,9 +2172,13 @@ char* help()
 
 void update_configuration(const Arg *arg)
 {
+	char home[128];
+	FILE *addr=popen("echo ~","r");
+	fscanf(addr,"%s",home);
+	pclose(addr);
+	strcat(home,"/.config/dwm/panel");
 	FILE *conffile;
-	if(conffile=fopen(".config/dwm/panel","a+")){//read panel parameters
-		//костыль ебаный: не удаётся задать явно домашнюю папку, так что надо в ней запускаться, чтобы это говно работало
+	if(conffile=fopen(home,"a+")){//read panel parameters
 		char *s, c;//string to obtain and symbol to read
 		int l=0;//length of string
 		s=(char*)malloc(0);
@@ -2195,6 +2199,7 @@ void update_configuration(const Arg *arg)
 					else if(strstr(s,"top")) pos=1;
 					else if(strstr(s,"left")) pos=2;
 					else if(strstr(s,"right")) pos=3;
+					else if(strstr(s,"snap")) pos=5;
 					free(s);
 					s=(char*)malloc(0);
 					l=0;
@@ -2206,7 +2211,8 @@ void update_configuration(const Arg *arg)
 						s[l-1]=c;
 					}while(c!='\n');
 					s[l]='\0';
-					panel[pos]=atoi(s);	
+					if(pos<=4)panel[pos]=atoi(s);
+					else if (pos==5) snap=atoi(s);
 				}
 				l=0;
 				free(s);
