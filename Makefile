@@ -27,9 +27,6 @@ config.h:
 dwm: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
-	@${CC} -o temp_scan read_temp.c
-	@${CC} -o power power.c
-	@${CC} -o memcpu proc.c
 
 clean:
 	@echo cleaning
@@ -53,22 +50,10 @@ install: all
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	@sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	@cp -f power ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/power
-	@cp -f temp_scan ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/temp_scan
-	@cp -f memcpu ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/memcpu
-	@mkdir ~/.config/dwm
-	@cp panel ~/.config/dwm
-	@cp startup ~/.config/dwm
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
 	@rm -f ${DESTDIR}${PREFIX}/bin/dwm
-	@rm -f ${DESTDIR}${PREFIX}/bin/power
-	@rm -f ${DESTDIR}${PREFIX}/bin/temp_scan
-	@rm -f ${DESTDIR}${PREFIX}/bin/memcpu
 	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/dwm.1
 
