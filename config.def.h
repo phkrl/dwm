@@ -5,12 +5,16 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static unsigned int snap      = 15;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray        = 1;     /* 0 means no systray */
 /*   Display modes of the tab bar: never shown, always shown, shown only in */
 /*   monocle mode in presence of several windows.                           */
 /*   Modes after showtab_nmodes are disabled                                */
 enum showtab_modes { showtab_never, showtab_auto, showtab_always, showtab_nmodes};
 static const int showtab            = showtab_always; /* Default tab bar show mode */
-static const int toptab            = False;    /* False means bottom tab bar */
+static const int toptab            = True;    /* False means bottom tab bar */
 
 static const char *fonts[]          = { "monospace:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
@@ -35,8 +39,8 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "Main", "Web", "Add", "Void", "Media", "6"};
-static unsigned int panel[4]={0,30,0,0};//positions: 0-bottom panel, 1-top panel, 2-left panel, 3-right panel
+static const char *tags[] = { "Main", "Web", "Add", "Void", "Media"};
+static unsigned int panel[4]={0,0,0,0};//positions: 0-bottom panel, 1-top panel, 2-left panel, 3-right panel
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -153,4 +157,5 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
+	{ ClkTabBar,            0,              Button3,        killwin,       {0} },
 };
