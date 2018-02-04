@@ -19,17 +19,17 @@ static const int toptab            = True;    /* False means bottom tab bar */
 static const char *fonts[]          = { "monospace:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char normbordercolor[] = "#ff0000";
-static const char normbgcolor[]     = "#000000";
+static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#00ee00";
 static const char selbordercolor[]  = "#00ff00";
 static const char selbgcolor[]      = "#000000";
 static const char selfgcolor[]      = "#ff0000";
 static const char tabbordercolor[]  = "#000e00";
-static const char tabbgcolor[]      = "#000000";
-static const char tabfgcolor[]      = "#0000ff";
+static const char tabbgcolor[]      = "#222222";
+static const char tabfgcolor[]      = "#bbbbbb";
 static const char tabselbordercolor[] = "#005522";
-static const char tabselbgcolor[]   = "#000078";
-static const char tabselfgcolor []  = "#86aa00";
+static const char tabselbgcolor[]   = "#005577";
+static const char tabselfgcolor []  = "#eeeeee";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
@@ -82,17 +82,19 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-b", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]  = { "xfce4-terminal", NULL };
+static const char *desktopmenucmd[] = { "desktop-menu", "exo-open", NULL};
+static const char *termcmd[]  = { "tabbed", "-c", "st", "-w", NULL };
 static const char *prtscr[]={"screenshot", NULL};
 static const char *thunar[]={"thunar",NULL};
 static const char *volumeup[]={"amixer", "set", "Master", "5%+", NULL};
 static const char *volumedown[]={"amixer", "set", "Master", "5%-", NULL};
 static const char *uplight[]={"xbacklight", "+5", NULL};
 static const char *downlight[]={"xbacklight", "-5", NULL};
+static const char *xkillcmd[] = { "/bin/bash", "-c", "xkill", NULL };
 
 static Key keys[] = {
 	// modifier                     key        function        argument
-	{ 0,                       WINDOWMASK,      spawn,          {.v = dmenucmd } },
+	{ 0,                       WINDOWMASK,      spawn,          {.v = desktopmenucmd } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
     { 0,                          XK_Print,     spawn,          {.v=prtscr}},
     { MODKEY,                       XK_e,      spawn,          {.v =thunar} },
@@ -149,6 +151,8 @@ static Button buttons[] = {
 	{ ClkWinTitle,          0,              Button3,        killclient,           {0} },
 	{ ClkWinTitle,          0,              Button1,        focusstack,           {.i=+1} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = volumeup } },
+	{ ClkStatusText,        0,              Button3,        spawn,          {.v = volumedown } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
@@ -158,4 +162,8 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
 	{ ClkTabBar,            0,              Button3,        killwin,       {0} },
+	{ ClkTabBar,            0,              Button4,        focusstack,     {.i = -1 } },
+	{ ClkTabBar,            0,              Button5,        focusstack,     {.i = +1 } },
+	{ ClkTabSymbol,         0,              Button1,        killclient,     {0} },
+	{ ClkTabSymbol,         0,              Button3,        spawn,     {.v = xkillcmd } },
 };

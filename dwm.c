@@ -84,7 +84,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
-enum { ClkTagBar, ClkTabBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+enum { ClkTagBar, ClkTabBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkTabSymbol,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
@@ -511,12 +511,33 @@ buttonpress(XEvent *e)
 		    ++i;
 		  else
 		    break;
-		  if(i >= m->ntabs) break;
+		  if(i >= m->ntabs) 
+		  	break;
 		}
-		if(c) {
+		if(i >= m->ntabs) {
+			int itag = -1;
+			char view_info[50];
+			for(i = 0; i < LENGTH(tags); ++i){
+				if((selmon->tagset[selmon->seltags] >> i) & 1) {
+	 		 		if(itag >=0){ //more than one tag selected
+	      				itag = -1;
+	      				break;
+	    			}
+	    		itag = i;
+	  			}
+			}
+			if(0 <= itag  && itag < LENGTH(tags)){
+				snprintf(view_info, sizeof view_info, "[%s]", tags[itag]);
+			} else {
+				strncpy(view_info, "[xkill]", sizeof view_info);
+			}
+			view_info[sizeof(view_info) - 1 ] = 0;
+			if(ev->x > selmon->ww - TEXTW(view_info)) click = ClkTabSymbol;
+		}
+		else if(c) {
 		  click = ClkTabBar;
 		  arg.ui = i;
-		}
+		} 
 	}
 	else if ((c = wintoclient(ev->window))) {
 		focus(c);
@@ -934,7 +955,7 @@ drawtab(Monitor *m) {
 	if(0 <= itag  && itag < LENGTH(tags)){
 	  snprintf(view_info, sizeof view_info, "[%s]", tags[itag]);
 	} else {
-	  strncpy(view_info, "[...]", sizeof view_info);
+	  strncpy(view_info, "[xkill]", sizeof view_info);
 	}
 	view_info[sizeof(view_info) - 1 ] = 0;
 	view_info_w = TEXTW(view_info);
@@ -969,7 +990,7 @@ drawtab(Monitor *m) {
 	  if(i >= m->ntabs) break;
 	  if(m->tab_widths[i] >  maxsize) m->tab_widths[i] = maxsize;
 	  w = m->tab_widths[i];
-	  drw_setscheme(drw, (c == m->sel) ? scheme[SchemeTabSel] : scheme[SchemeSel]);
+	  drw_setscheme(drw, (c == m->sel) ? scheme[SchemeTabSel] : scheme[SchemeTab]);
 	  drw_text(drw, x, 0, w, th, 0, c->name, 0);
 	  x += w;
 	  ++i;
