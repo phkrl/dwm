@@ -57,7 +57,6 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
-#define ColBorder               2
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 
@@ -1260,7 +1259,7 @@ grabkeys(void)
 
 char* help()
 {
-	return "usage: dwm [OPTIONS] {VALUE}\noptions:\n-h, --help: show this help\n-v: show version";
+	return "usage: dwm [-hv] [-fn font] [-nb color] [-nf color] [-sb color] [-sf color]\n[-tnb color] [-tnf color] [-tsb color] [-tsf color]\n";
 }
 
 void
@@ -2810,10 +2809,39 @@ zoom(0);
 int
 main(int argc, char *argv[])
 {
-	if (argc == 2 && !strcmp("-v", argv[1]))
-		die("dwm-"VERSION);
-	else if (argc != 1)
-		die(help());
+	for(int i=1;i<argc;i+=1)
+		if (!strcmp("-v", argv[i]))
+			die("dwm-"VERSION);
+		else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))
+			die(help());
+		else if (!strcmp("-fn", argv[i])) /* font set */
+			fonts[0] = argv[++i];
+		else if (!strcmp("-nb",argv[i])) /* normal background color */
+			colors[SchemeNorm][1] = argv[++i];
+		else if (!strcmp("-nf",argv[i])) /* normal foreground color */
+			colors[SchemeNorm][0] = argv[++i];
+		else if (!strcmp("-sb",argv[i])) /* selected background color */
+			colors[SchemeSel][1] = argv[++i];
+		else if (!strcmp("-sf",argv[i])) /* selected foreground color */
+			colors[SchemeSel][0] = argv[++i];
+		else if (!strcmp("-tnb",argv[i])) /* tab normal background color */
+			colors[SchemeTab][1] = argv[++i];
+		else if (!strcmp("-tnf",argv[i])) /* tab normal foreground color */
+			colors[SchemeTab][0] = argv[++i];
+		else if (!strcmp("-tsb",argv[i])) /* tab selected background color */
+			colors[SchemeTabSel][1] = argv[++i];
+		else if (!strcmp("-tsf",argv[i])) /* tab selected foreground color */
+			colors[SchemeTabSel][0] = argv[++i];
+		else if (!strcmp("-df", argv[i])) /* dmenu font */
+			dmenucmd[5] = argv[++i];
+		else if (!strcmp("-dnb",argv[i])) /* dmenu normal background color */
+			dmenucmd[7] = argv[++i];
+		else if (!strcmp("-dnf",argv[i])) /* dmenu normal foreground color */
+			dmenucmd[9] = argv[++i];
+		else if (!strcmp("-dsb",argv[i])) /* dmenu selected background color */
+			dmenucmd[11] = argv[++i];
+		else if (!strcmp("-dsf",argv[i])) /* dmenu selected foreground color */
+			dmenucmd[13] = argv[++i];
 	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))

@@ -49,6 +49,10 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "conky",     NULL,       NULL,       0,            1,           -1 },
+	{ "onboard",     NULL,       NULL,     0,            1,           -1 },
+	{ "gnome-mines",     NULL,       NULL,     0,            1,           -1 },
+	{ "four-in-a-row",     NULL,       NULL,     0,            1,           -1 },
+	{ "iagno",     NULL,       NULL,     0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -82,10 +86,10 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-b", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *desktopmenucmd[] = { "desktop-menu", "exo-open", NULL};
+static const char *desktopmenucmd[] = { "desktop-menu", NULL};
 static const char *termcmd[]  = { "tabbed", "-c", "st", "-w", NULL };
 static const char *prtscr[]={"screenshot", NULL};
-static const char *thunar[]={"thunar",NULL};
+static const char *pcmanfm[]={"pcmanfm",NULL};
 static const char *volumeup[]={"amixer", "set", "Master", "5%+", NULL};
 static const char *volumedown[]={"amixer", "set", "Master", "5%-", NULL};
 static const char *uplight[]={"xbacklight", "+5", NULL};
@@ -97,7 +101,7 @@ static Key keys[] = {
 	{ 0,                       WINDOWMASK,      spawn,          {.v = desktopmenucmd } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
     { 0,                          XK_Print,     spawn,          {.v=prtscr}},
-    { MODKEY,                       XK_e,      spawn,          {.v =thunar} },
+    { MODKEY,                       XK_e,      spawn,          {.v =pcmanfm} },
 	{ MODKEY|ControlMask,              XK_t, spawn,          {.v = termcmd } },
 	//{ MODKEY,                       XK_b,      togglebar,      {0} },
 	//{ MODKEY,                       XK_b,      tabmode,        {-1} },
