@@ -213,6 +213,7 @@ static unsigned int getsystraywidth();
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void grid(Monitor *m);
 static char* help();
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
@@ -939,7 +940,9 @@ drawtab(Monitor *m) {
 	int maxsize = bh;
 	int x = 0;
 	int w = 0;
-
+	int boxs = drw->fonts->h / 2;
+	int boxw = drw->fonts->h / 2 + 2;
+	
 	//view_info: indicate the tag which is displayed in the view
 	for(i = 0; i < LENGTH(tags); ++i){
 	  if((selmon->tagset[selmon->seltags] >> i) & 1) {
@@ -992,6 +995,8 @@ drawtab(Monitor *m) {
 	  drw_setscheme(drw, (c == m->sel) ? scheme[SchemeTabSel] : scheme[SchemeTab]);
 	  drw_text(drw, x, 0, w, th, 0, c->name, 0);
 	  x += w;
+	  if (c->isfloating)
+	  	drw_rect(drw, x - 2*boxs, boxs, boxw, boxw, c->isfixed, 0);
 	  ++i;
 	}
 
@@ -1254,6 +1259,34 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
 						True, GrabModeAsync, GrabModeAsync);
+	}
+}
+
+void
+grid(Monitor *m) {
+	unsigned int i, n, cx, cy, cw, ch, aw, ah, cols, rows;
+	Client *c;
+
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next))
+		n++;
+
+	/* grid dimensions */
+	for(rows = 0; rows <= n/2; rows++)
+		if(rows*rows >= n)
+			break;
+	cols = (rows && (rows - 1) * rows >= n) ? rows - 1 : rows;
+
+	/* window geoms (cell height/width) */
+	ch = (m->wh - panel[1] - panel[0]) / (rows ? rows : 1);
+	cw = (m->ww - panel[2] - panel[3]) / (cols ? cols : 1);
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next)) {
+		cx = m->wx + panel[2] + (i / rows) * cw;
+		cy = m->wy + panel[1] + (i % rows) * ch;
+		/* adjust height/width of last row/column's windows */
+		ah = ((i + 1) % rows == 0) ? m->wh - panel[0] - panel[1] - ch * rows : 0;
+		aw = (i >= rows * (cols - 1)) ? m->ww - panel[3] - panel[2] - cw * cols : 0;
+		resize(c, cx, cy, cw - 2 * c->bw + aw, ch - 2 * c->bw + ah, False);
+		i++;
 	}
 }
 
