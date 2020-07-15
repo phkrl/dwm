@@ -190,6 +190,7 @@ static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
 static Monitor *createmon(void);
+static void createnotify(XEvent *e);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
@@ -298,6 +299,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ClientMessage] = clientmessage,
 	[ConfigureRequest] = configurerequest,
 	[ConfigureNotify] = configurenotify,
+	[CreateNotify] = createnotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
 	[Expose] = expose,
@@ -785,6 +787,20 @@ createmon(void)
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	return m;
+}
+
+void
+createnotify(XEvent *e)
+{
+	XCreateWindowEvent *ev=&e->xcreatewindow;
+	XSetWindowAttributes swa;
+	XWindowAttributes wa;
+
+	XGetWindowAttributes(dpy, ev->window, &wa);
+	if (wa.class == InputOutput) {
+		swa.backing_store = Always;
+		XChangeWindowAttributes(dpy, ev->window, CWBackingStore, &swa);
+	}
 }
 
 void
