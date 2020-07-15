@@ -227,6 +227,7 @@ static Client *nexttiled(Client *c);
 static void pop(Client *c);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
+static void reading(Monitor *);
 static Monitor *recttomon(int x, int y, int w, int h);
 static void removesystrayicon(Client *i);
 static void resize(Client *c, int x, int y, int w, int h, int interact);
@@ -1590,6 +1591,32 @@ void
 quit(const Arg *arg)
 {
 	running = 0;
+}
+
+void
+reading(Monitor *m)
+{
+	unsigned int i, n, w, mh, mx, tx;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mh = m->nmaster ? m->wh * m->mfact : 0;
+	else
+		mh = m->wh ;
+	for (i = mx = tx = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) {
+			w = (m->ww - mx) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx+mx, m->wy, w - (c->bw), mh - (c->bw), 0);
+			mx += WIDTH(c);
+		} else {
+			w = (m->ww - tx) / (n - i);
+			resize(c, m->wx + tx, m->wy + mh, w - (c->bw), m->wh-mh - (c->bw), 0);
+			tx += WIDTH(c);
+		}
 }
 
 Monitor *
