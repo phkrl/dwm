@@ -16,17 +16,18 @@ enum showtab_modes { showtab_never, showtab_auto, showtab_always, showtab_nmodes
 static const int showtab = showtab_always;        /* Default tab bar show mode */
 static const int toptab = 1;               /* False means bottom tab bar */
 
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char *fonts[]          = { "monospace:size=12" };
+static const char dmenufont[]       = "monospace:size=12";
+static const char normbordercolor[] = "#ff0000";
+static const char normbgcolor[]     = "#222222";
+static const char normfgcolor[]     = "#00ee00";
+static const char selbordercolor[]  = "#00ff00";
+static const char selbgcolor[]      = "#000000";
+static const char selfgcolor[]      = "#ff0000";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+	[SchemeSel]  = { selfgcolor, selbgcolor, selbordercolor },
 };
 
 /* tagging */
@@ -71,7 +72,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-b", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *kbdcmd[] = {"svkbd-en", NULL};
 static const char *termcmd[]  = { "tabbed", "-c", "-r", "2", "st", "-w", "0", NULL };
 static const char *xkillcmd[] = { "/bin/bash", "-c", "xkill", NULL };
