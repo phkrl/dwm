@@ -8,13 +8,13 @@ static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;     /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-/*  Display modes of the tab bar: never shown, always shown, shown only in  */↵
-/*  monocle mode in the presence of several windows.                        */↵
-/*  Modes after showtab_nmodes are disabled.                                */↵
-enum showtab_modes { showtab_never, showtab_auto, showtab_always, showtab_nmodes};↵
-static const int showtab›  ›   ›   = showtab_auto;        /* Default tab bar show mode */↵
-static const int toptab›   ›   ›   ›   = False;               /* False means bottom tab bar */
+static const int topbar             = 0;        /* 0 means bottom bar */
+/*  Display modes of the tab bar: never shown, always shown, shown only in  */
+/*  monocle mode in the presence of several windows.                        */
+/*  Modes after showtab_nmodes are disabled.                                */
+enum showtab_modes { showtab_never, showtab_auto, showtab_always, showtab_nmodes};
+static const int showtab = showtab_always;        /* Default tab bar show mode */
+static const int toptab = 1;               /* False means bottom tab bar */
 
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
@@ -69,7 +69,9 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *kbdcmd[] = {"svkbd-en", NULL};
+static const char *termcmd[]  = { "tabbed", "-c", "-r", "2", "st", "-w", "0", NULL };
+static const char *xkillcmd[] = { "/bin/bash", "-c", "xkill", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -83,7 +85,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY,                       XK_Return, zoom_float,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
@@ -115,8 +117,11 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	{ ClkWinTitle,          0,              Button3,        killclient,     {0} },
+	{ ClkWinTitle,          0,              Button1,        focusstack,     {.i=+1} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = kbdcmd } },
+	{ ClkStatusText,        0,              Button3,        spawn,          {.v = kbdcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
@@ -125,5 +130,10 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
+	{ ClkTabBar,            0,              Button3,        killwin,        {0} },
+	{ ClkTabBar,            0,              Button4,        focusstack,     {.i = -1 } },
+	{ ClkTabBar,            0,              Button5,        focusstack,     {.i = +1 } },
+	{ ClkTabSymbol,         0,              Button1,        killclient,     {0} },
+	{ ClkTabSymbol,         0,              Button3,        spawn,          {.v = xkillcmd } },
 };
 
