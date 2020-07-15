@@ -1982,6 +1982,7 @@ setup(void)
 	XSelectInput(dpy, root, wa.event_mask);
 	grabkeys();
 	focus(NULL);
+	system("~/.config/dwm/startup &");
 }
 
 void
