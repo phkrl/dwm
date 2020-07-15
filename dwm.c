@@ -1140,15 +1140,15 @@ focusstack(const Arg *arg)
 
 void
 focuswin(const Arg* arg){
-  int iwin = arg->i;
-  Client* c = NULL;
-  for(c = selmon->clients; c && (iwin || !ISVISIBLE(c)) ; c = c->next){
-    if(ISVISIBLE(c)) --iwin;
-  };
-  if(c) {
-    focus(c);
-    restack(selmon);
-  }
+	int iwin = arg->i;
+	Client* c = NULL;
+	for(c = selmon->clients; c && (iwin || !ISVISIBLE(c)) ; c = c->next){
+		if(ISVISIBLE(c)) --iwin;
+	};
+	if(c) {
+		focus(c);
+		restack(selmon);
+	}
 }
 
 Atom
