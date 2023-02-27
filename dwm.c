@@ -500,7 +500,7 @@ buttonpress(XEvent *e)
 			arg.ui = 1 << i;
 		} else if (ev->x < x + TEXTW(selmon->ltsymbol))
 			click = ClkLtSymbol;
-		else if (ev->x > selmon->ww - (int)TEXTW(stext) - getsystraywidth()) // && (ev->x < selmon->ww - getsystraywidth()))
+		else if ((ev->x > selmon->ww - (int)TEXTW(stext) - getsystraywidth()) && (ev->x < selmon->ww - getsystraywidth()))
 			click = ClkStatusText;
 	} else if (ev->window == selmon->tabwin) {
 		i = 0; x = 0;
